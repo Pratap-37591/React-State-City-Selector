@@ -7,7 +7,8 @@ const ListComponent = () => {
     const navigate = useNavigate();
 
     const [state, setState] = useState([]);
-
+    const [selectedState, setSelectedState] = useState('');
+    const [selectedCity, setSelectedCity] = useState('');
     useEffect(() => {
         const fetchStateData = async () => {
             try {
@@ -29,11 +30,31 @@ const ListComponent = () => {
     }, [])
 
 
+    const handleStateChange = (event) => {
+        const newState = event.target.value;
+        setSelectedState(newState);
+        console.log("Selected State:", newState);
+    };
+
+    const handleCityChange = (event) => {
+        const newCity = event.target.value;
+        setSelectedCity(newCity);
+        console.log("Selected City:", newCity);
+    };
+
+    const handleSubmit = () => {
+        console.log("Selected State:", selectedState);
+        console.log("Selected City:", selectedCity);
+        // Navigate to the Result component with selected state and city as props
+        if (selectedState && selectedCity) {
+            navigate("/result", { state: selectedState, city: selectedCity });
+        }
+    };
     return (
         <div>
             <center><h1>Select State and City</h1></center>
-            <section style={{ display: 'flex', justifyContent: 'center' , gap: '30px' }}>
-                <select>
+            <section style={{ display: 'flex', justifyContent: 'center', gap: '30px' }}>
+                <select value={selectedState} onChange={handleStateChange}>
                     <option value="">Select State</option>
                     {state.map((stateData, index) => (
                         <option key={index} value={stateData.state_code}>
@@ -41,12 +62,12 @@ const ListComponent = () => {
                         </option>
                     ))}
                 </select>
-                <CityComponent stateDate={state} />
-                <button onClick={() => navigate("/result")}>Submit</button>
+                <CityComponent selectedState={selectedState} onCityChange={handleCityChange} selectedCity={selectedCity} />
+                <button onClick={handleSubmit}>Submit</button>
             </section>
 
         </div>
     )
 }
 
-export default ListComponent
+export default ListComponent;
